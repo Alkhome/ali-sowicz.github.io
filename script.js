@@ -24,13 +24,14 @@ let sumIA = 0;
 let sumHappy = 0;
 let sumSE = 0;
 
+answers= {};
+wartosc= null;
+
 // po prostu obj aby mieć zapisane te odpowiedzi
 const participant = {
     age: null,
     gender: null,
-    student: null,
-    answers: {},
-    wartosc: null, 
+    student: null, 
     ansIA: null,
     ansHappy: null,
     ansSE: null
@@ -67,8 +68,8 @@ nextBtn.onclick = () => {
                     saveOptAnswers();
 
                 }else{                    
-                     wartosc = Object.values(participant.answers); //przekonwertowanie obiektu answers do tablicy
-                     
+                    // wartosc = Object.values(participant.answers); //przekonwertowanie obiektu answers do tablicy
+                    wartosc = Object.values(answers);
                     for( i = 0; i < wartosc.length; i++){
                         compareS(wartosc[i]);
                         //console.log(wartosc[i], sumIA);
@@ -76,7 +77,8 @@ nextBtn.onclick = () => {
                         participant.ansHappy = sumHappy;
                         participant.ansSE = sumSE;
                     }
-                    console.log(participant.age, participant.gender, participant.student, participant.answers, participant.ansIA, participant.ansHappy, participant.ansSE);
+                    console.log(participant.age, participant.gender, participant.student, answers, participant.ansIA, participant.ansHappy, participant.ansSE);
+                    sendD();
                     alert("Dziękujemy za wypełnienie ankiety :)")
                 }
             }
@@ -85,7 +87,30 @@ nextBtn.onclick = () => {
 
 }
 
+function sendD() {
+     // Get the reciever endpoint from Python using fetch:
+    fetch("http://127.0.0.1:5000/receiver", 
+    {
+    method: 'POST',
+    headers: {
+    'Content-type': 'application/json',
+    'Accept': 'application/json'
+    },
+    // Strigify the payload into JSON:
+    body:JSON.stringify(participant)}).then(res=>{
+    if(res.ok){
+    return res.json()
+    }else{
+    alert("something is wrong")
+    }
+    }).then(jsonResponse=>{
+    
+    // Log the response data in the console
+    console.log(jsonResponse)
+    } 
+    ).catch((err) => console.error(err));   
 
+}
 
 function clearDom() {
 
@@ -158,7 +183,8 @@ function ifSelected() {
 
 function ifOptSelected() {
     // tutaj sprawdza czy ta osoba juz wybrała opcje a jak nie to po prostu F zwraca false
-    if (participant.answers[questions[que_count - 1].numb] === undefined) {    
+    // if (participant.answers[questions[que_count - 1].numb] === undefined) {  
+        if (answers[questions[que_count - 1].numb] === undefined) {   
         return false
     } else return true
 }
@@ -201,7 +227,8 @@ function saveOptAnswers() {
     // Assignes choosen option to object
     optionElement.forEach(element => element.addEventListener('click', () => {
         // tutaj - 1 musi byc bo masz zle ponumerowane w sensie index zaczyna sie od 0 xd
-        participant.answers[questions[que_count - 1].numb] = element.innerHTML
+        // participant.answers[questions[que_count - 1].numb] = element.innerHTML
+        answers[questions[que_count - 1].numb] = element.innerHTML
     }))
 
     // Adds class to selected option
