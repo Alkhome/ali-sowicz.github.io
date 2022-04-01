@@ -89,7 +89,7 @@ nextBtn.onclick = () => {
 
 function sendD() {
      // Get the reciever endpoint from Python using fetch:
-    fetch("http://127.0.0.1:5000/receiver", 
+    fetch("http://alicja.pythonanywhere.com/", 
     {
     method: 'POST',
     headers: {

@@ -5,7 +5,7 @@ app = Flask(__name__)
 #Set up Flask to bypass CORS:
 cors = CORS(app)
 #Create the receiver API POST endpoint:
-@app.route("/receiver", methods=["POST"])
+@app.route("/", methods=["POST"])
 def postME():
  data = request.get_json()
  data = jsonify(data)
