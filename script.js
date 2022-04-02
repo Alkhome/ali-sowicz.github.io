@@ -1,3 +1,7 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+import {getDatabase, ref, set, child, update, remove} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-database.js"
+
 const quizBox = document.querySelector(".quiz_box");
 const nextBtn = document.querySelector("footer .next_btn");
 const bottom_ques_counter = document.querySelector("footer .total_que");
@@ -25,22 +29,20 @@ let sumHappy = 0;
 let sumSE = 0;
 let increment = Math.floor(Math.random() * 10);
 
-answers= {};
-wartosc= null;
+var answers= {};
+var wartosc= null;
 
 // po prostu obj aby mieć zapisane te odpowiedzi
 const participant = {
     age: null,
     gender: null,
-    student: null, 
+    student: null,
     ansIA: null,
     ansHappy: null,
     ansSE: null
 }
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -59,21 +61,20 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+//const analytics = getAnalytics(app);
 
-import {getDatabase, ref, set, child, update, remove}
-from "firebase/database"
+
 
 const db = getDatabase();
 
 function InsertData(){
     set(ref(db, "user/" + increment),{
         Age: participant.age,
-        Gender: participant.gender, 
-        Student: participant.student, 
-        Answers1: answers, 
-        AnsIA: participant.ansIA, 
-        AnsHAPPY: participant.ansHappy, 
+        Gender: participant.gender,
+        Student: participant.student,
+        Answers1: answers,
+        AnsIA: participant.ansIA,
+        AnsHAPPY: participant.ansHappy,
         AnsSE: participant.ansSE
     })
     .then(()=>{
@@ -86,19 +87,19 @@ function InsertData(){
 
 
 nextBtn.onclick = () => {
-    // pierw sprawdza czy masz zaznaczone wszystko 
+    // pierw sprawdza czy masz zaznaczone wszystko
 
     if (ifSelected() == false) {
         console.log("false");
         alert("Please select all options")
-        // tutaj jak nie ma to rzuca alert idk mozesz dac jakis czerwony tekst gdzies czy cos 
+        // tutaj jak nie ma to rzuca alert idk mozesz dac jakis czerwony tekst gdzies czy cos
 
     } else if (ifSelected() == true) {
-        // jesli nie ma problemu to lecimy dalej 
-        // masz opisane nizej co to 
+        // jesli nie ma problemu to lecimy dalej
+        // masz opisane nizej co to
         clearDom();
-        // teraz trzeba sprawdzic czy to jest pierwsze pytanie czy nastepne 
-        // bo jesli bedzie to 0 to wtedy przed kliknieciem next za pierwszym razem 
+        // teraz trzeba sprawdzic czy to jest pierwsze pytanie czy nastepne
+        // bo jesli bedzie to 0 to wtedy przed kliknieciem next za pierwszym razem
         // to nie ma jeszcze wpisanych odpowiedzi
         if (que_count == 0) {
             displayQuestion1();
@@ -107,7 +108,7 @@ nextBtn.onclick = () => {
             if (ifOptSelected() == false) {
                 console.log('false');
                 alert("Please select an option")
-                // tutaj gdyby sie zaczelo od 0 to by nie przeszlo 
+                // tutaj gdyby sie zaczelo od 0 to by nie przeszlo
 
             } else if (ifOptSelected() === true) {
                 if (que_count < questions.length) {
@@ -115,10 +116,10 @@ nextBtn.onclick = () => {
                     displayQuestion1();
                     saveOptAnswers();
 
-                }else{                    
+                }else{
                     // wartosc = Object.values(participant.answers); //przekonwertowanie obiektu answers do tablicy
                     wartosc = Object.values(answers);
-                    for( i = 0; i < wartosc.length; i++){
+                    for( var i = 0; i < wartosc.length; i++){
                         compareS(wartosc[i]);
                         //console.log(wartosc[i], sumIA);
                         participant.ansIA = sumIA;
@@ -144,7 +145,7 @@ nextBtn.onclick = () => {
 
 function sendD() {
      // Get the reciever endpoint from Python using fetch:
-    fetch("http://alicja.pythonanywhere.com/", 
+    fetch("http://alicja.pythonanywhere.com/",
     {
     method: 'POST',
     headers: {
@@ -159,17 +160,17 @@ function sendD() {
     alert("something is wrong")
     }
     }).then(jsonResponse=>{
-    
+
     // Log the response data in the console
     console.log(jsonResponse)
-    } 
-    ).catch((err) => console.error(err));   
+    }
+    ).catch((err) => console.error(err));
 
 }
 
 function clearDom() {
 
-    // czyści i usuwa zbędne elementy 
+    // czyści i usuwa zbędne elementy
     optionList.style.display = "flex"
     age.remove("show");
     age_btn.forEach(btn => btn.remove("show"));
@@ -180,7 +181,7 @@ function clearDom() {
 }
 
 function displayQuestion1() {
-    // wrzuciłam to w funkcję aby było czytelniej 
+    // wrzuciłam to w funkcję aby było czytelniej
 
     que_numb++;
     showQuetions(que_count);
@@ -204,7 +205,7 @@ function savePersonAnswers() {
         // daje efekt zaznaczenia
         btn.setAttribute('id', 'selected')
 
-        // no i tutaj zmienia aby ci sie zapisalo kto i co 
+        // no i tutaj zmienia aby ci sie zapisalo kto i co
         participant.age = btn.innerHTML
 
     }))
@@ -238,8 +239,8 @@ function ifSelected() {
 
 function ifOptSelected() {
     // tutaj sprawdza czy ta osoba juz wybrała opcje a jak nie to po prostu F zwraca false
-    // if (participant.answers[questions[que_count - 1].numb] === undefined) {  
-        if (answers[questions[que_count - 1].numb] === undefined) {   
+    // if (participant.answers[questions[que_count - 1].numb] === undefined) {
+        if (answers[questions[que_count - 1].numb] === undefined) {
         return false
     } else return true
 }
@@ -254,7 +255,7 @@ function showQuetions(index) {
 
     // tutaj dałam loop aby renderowało tyle opcji ile jest w pytaniu czyli jak masz 5 opcji to pokaze 5 a jak 100 to 100 a nie ze bedziesz dodawać
     // jeden po jednym xd
-    for (i = 0; i < questions[index].options.length; i++) {
+    for ( var i = 0; i < questions[index].options.length; i++) {
 
         let optionEl = document.createElement("option")
         let optionTag = `${questions[index].options[i]}`
@@ -263,7 +264,7 @@ function showQuetions(index) {
         optionEl.setAttribute('id', 'option-element')
         optionList.appendChild(optionEl)
 
-        
+
     }
 }
 
@@ -337,7 +338,7 @@ function compareS(odp){
     var string = odp.toString();
     var stringk = 'k';
 
-    if(stringNever == string){   
+    if(stringNever == string){
         sumIA += 1;
     }else if(stringRarely == string){
         sumIA += 2;
@@ -347,9 +348,9 @@ function compareS(odp){
         sumIA += 4;
     }else if(stringAlways == string){
         sumIA += 5;
-    } 
-    
-    if(stringSnz == string){   
+    }
+
+    if(stringSnz == string){
         sumHSE += 1;
     }else if(stringNzs == string){
         sumSE += 2;
@@ -359,7 +360,7 @@ function compareS(odp){
         sumSE+= 4;
     }
 
-    if(stringSnz.concat(stringk) == string){   
+    if(stringSnz.concat(stringk) == string){
         sumSE += 4;
     }else if(stringNzs.concat(stringk) == string){
         sumSE += 3;
@@ -369,7 +370,7 @@ function compareS(odp){
         sumSE += 1;
     }
 
-    if(stringX == string){   
+    if(stringX == string){
         sumHappy += 1;
     }else if(stringX1 == string){
         sumHappy += 2;
@@ -379,7 +380,7 @@ function compareS(odp){
         sumHappy += 4;
     }
 
-    if(stringY == string){   
+    if(stringY == string){
         sumHappy += 1;
     }else if(stringY1 == string){
         sumHappy += 2;
@@ -389,7 +390,7 @@ function compareS(odp){
         sumHappy += 4;
     }
 
-    if(stringY.concat(stringk) == string){   
+    if(stringY.concat(stringk) == string){
         sumHappy += 4;
     }else if(stringY1.concat(stringk) == string){
         sumHappy += 3;
@@ -398,6 +399,6 @@ function compareS(odp){
     }else if(stringY4.concat(stringk) == string){
         sumHappy += 1;
     }
-  
+
 }
 savePersonAnswers();
