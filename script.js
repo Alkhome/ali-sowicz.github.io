@@ -23,6 +23,7 @@ let widthValue = 0;
 let sumIA = 0;
 let sumHappy = 0;
 let sumSE = 0;
+let increment = Math.floor(Math.random() * 10);
 
 answers= {};
 wartosc= null;
@@ -36,6 +37,53 @@ const participant = {
     ansHappy: null,
     ansSE: null
 }
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCH0BbtPEORMMM2UWxc2b1ZCBpwp-luHL8",
+  authDomain: "ankieta-raim.firebaseapp.com",
+  databaseURL: "https://ankieta-raim-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ankieta-raim",
+  storageBucket: "ankieta-raim.appspot.com",
+  messagingSenderId: "557619376772",
+  appId: "1:557619376772:web:dd6136b34cc506b34f88d1",
+  measurementId: "G-RPB9C1MRJH"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+//const analytics = getAnalytics(app);
+
+import {getDatabase, ref, set, child, update, remove}
+from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"
+
+const db = getDatabase();
+
+function InsertData(){
+    set(ref(db, "user/" + increment),{
+        Age: participant.age,
+        Gender: participant.gender, 
+        Student: participant.student, 
+        Answers1: answers, 
+        AnsIA: participant.ansIA, 
+        AnsHAPPY: participant.ansHappy, 
+        AnsSE: participant.ansSE
+    })
+    .then(()=>{
+        alert("data stored successfully");
+    })
+    .catch((error)=>{
+        alert("unsuccessfull, error" + error);
+    });
+}
+
 
 nextBtn.onclick = () => {
     // pierw sprawdza czy masz zaznaczone wszystko 
@@ -78,14 +126,21 @@ nextBtn.onclick = () => {
                         participant.ansSE = sumSE;
                     }
                     console.log(participant.age, participant.gender, participant.student, answers, participant.ansIA, participant.ansHappy, participant.ansSE);
-                    sendD();
-                    alert("Dziękujemy za wypełnienie ankiety :)")
+                    //sendD();
+                    InsertData();
+                    //alert("Dziękujemy za wypełnienie ankiety :)")
                 }
             }
         }
     }
 
 }
+
+// function writeUserAns(userId,a, g, s, o, x, y, z){
+//     firebase.database().ref('users/' + userId).set({
+
+//     })
+// }
 
 function sendD() {
      // Get the reciever endpoint from Python using fetch:
